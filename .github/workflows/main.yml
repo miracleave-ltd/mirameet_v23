@@ -10,14 +10,15 @@ jobs:
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
-      - name: build
-        uses: ./.github/actions/build
+
       - name: Setup mdBook
         uses: peaceiris/actions-mdbook@v1
         with:
           mdbook-version: '0.4.12'
           # mdbook-version: 'latest'
+
       - run: mdbook build
+
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
