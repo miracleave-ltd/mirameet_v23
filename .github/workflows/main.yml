@@ -11,7 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: mdbook build
-        uses: ./.github/actions/build
+        uses: ./.github/build
       - name: Setup mdBook
         uses: peaceiris/actions-mdbook@v1
         with:
