@@ -3,8 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title></title>
-                <meta name="robots" content="noindex" />
+        <title>2. データベースの設定</title>
                 
 
         <!-- Custom HTML head -->
@@ -84,7 +83,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="chapter_1.html">Railsプロジェクトの作成</a></li><li class="chapter-item expanded affix "><a href="chapter_2.html">データベースの設定</a></li><li class="chapter-item expanded affix "><a href="chapter_3.html">テーブル作成とSeedデータ投入</a></li><li class="chapter-item expanded affix "><a href="chapter_4.html">画面の作成</a></li></ol>            </div>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="chapter_1.html">Railsプロジェクトの作成</a></li><li class="chapter-item expanded affix "><a href="chapter_2.html" class="active">データベースの設定</a></li><li class="chapter-item expanded affix "><a href="chapter_3.html">テーブル作成とSeedデータ投入</a></li><li class="chapter-item expanded affix "><a href="chapter_4.html">画面の作成</a></li></ol>            </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
 
@@ -145,24 +144,7 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="1-railsプロジェクトの作成"><a class="header" href="#1-railsプロジェクトの作成">1. Railsプロジェクトの作成</a></h1>
-<!-- toc -->
-<h2 id="11-myappをユーザー直下に配置します"><a class="header" href="#11-myappをユーザー直下に配置します">1.1. myappをユーザー直下に配置します</a></h2>
-<p><code>docker-hands-on-master.zip</code>を解凍し、<code>myapp</code>ディレクトリをユーザー直下に配置します。<br>※画像はWindowsの場合
-<img src="https://user-images.githubusercontent.com/53431136/69335083-7033d580-0c9f-11ea-9253-b1a876eae9ae.PNG" alt="キャプチャ" /></p>
-<p><img src="https://user-images.githubusercontent.com/53431136/69317135-a5c7c700-0c7d-11ea-9b27-40e50614be1f.png" alt="image-20191119101214129" /></p>
-<h2 id="12-配置したmyappフォルダに移動します"><a class="header" href="#12-配置したmyappフォルダに移動します">1.2. 配置したmyappフォルダに移動します</a></h2>
-<pre><code># Windows
-cd C:\Users\myapp
-# Mac
-cd ~/myapp
-</code></pre>
-<h2 id="13-railsの新規プロジェクトを作成します"><a class="header" href="#13-railsの新規プロジェクトを作成します">1.3. Railsの新規プロジェクトを作成します</a></h2>
-<p>以下を実行するとmyapp配下にファイルが作成されます。</p>
-<pre><code>docker-compose run web rails new . --force --no-deps --database=mysql
-</code></pre>
-<p>次はデータベースの準備を行います。</p>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="2-データベースの設定"><a class="header" href="#2-データベースの設定">2. データベースの設定</a></h1>
+                        <h1 id="2-データベースの設定"><a class="header" href="#2-データベースの設定">2. データベースの設定</a></h1>
 <!-- toc -->
 <h2 id="21-コンテナを停止"><a class="header" href="#21-コンテナを停止">2.1. コンテナを停止</a></h2>
 <p>データベースの設定を行うので一度コンテナを停止します。</p>
@@ -195,114 +177,18 @@ cd ~/myapp
 <pre><code>http://localhost:3000/
 </code></pre>
 <p><img src="https://user-images.githubusercontent.com/53431136/69325441-85076d80-0c8d-11ea-9610-786f056a8201.png" alt="rails" /></p>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="3-テーブル作成とseedデータ投入"><a class="header" href="#3-テーブル作成とseedデータ投入">3. テーブル作成とSeedデータ投入</a></h1>
-<!-- toc -->
-<p>WEBのコンテナに接続します。</p>
-<pre><code class="language-bash">docker exec -it myapp_web_1 bash
-</code></pre>
-<h1 id="31-migrate準備"><a class="header" href="#31-migrate準備">3.1. migrate準備</a></h1>
-<p>以下を実行し、<code>model</code>ファイルと<code>migration</code>ファイルを作成します。<br>モデル名は<strong>単数形</strong>で先頭は<strong>大文字</strong>にします。</p>
-<pre><code class="language-ruby">rails g model Employee number:string name:string date:string
-</code></pre>
-<p>以下を実行し、上記で作成した<code>migrateion</code>ファイルをデータベースへ反映させます。</p>
-<pre><code class="language-ruby">rails db:migrate
-</code></pre>
-<p>以下を実行し、コントローラーの作成を行います。コントローラー名は<strong>複数形</strong>で先頭は<strong>大文字</strong>にします．</p>
-<pre><code class="language-ruby">rails g controller Employees
-</code></pre>
-<p><code>myapp\app\controllers\employees_controller.rb</code>を以下のとおり、編集します。<br><code>Employee</code>テーブルのデータを全て取得する簡単なプログラムです。</p>
-<pre><code class="language-ruby">// employees_controller.rb
-class EmployeesController &lt; ApplicationController
-  def index
-    @employees = Employee.all
-  end
-end
-</code></pre>
-<h2 id="32-seedデータ準備"><a class="header" href="#32-seedデータ準備">3.2. Seedデータ準備</a></h2>
-<p><code>myapp\db\seeds.rb</code>のファイルを以下のとおり、編集します。</p>
-<pre><code class="language-ruby">// seeds.rb
-Employee.create(
-  [
-    {
-      number: '001',
-      name: 'Yamada',
-      date: '2018/01/01',
-    },
-    {
-      number: '002',
-      name: 'Tanaka',
-      date: '2019/04/01',
-    },
-    {
-      number: '003',
-      name: 'Sato',
-      date: '2019/05/01',
-    },
-  ],
-)
-</code></pre>
-<p>上記で用意したデータを投入します。</p>
-<pre><code class="language-ruby">rails db:seed
-</code></pre>
-<p>データを投入したらアクセス時の画面を作成していきます。</p>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="4-画面の作成"><a class="header" href="#4-画面の作成">4. 画面の作成</a></h1>
-<!-- toc -->
-<h2 id="41-ルーティングの設定"><a class="header" href="#41-ルーティングの設定">4.1 ルーティングの設定</a></h2>
-<p><code>myapp\config\routes.rb</code>のファイルを編集します。</p>
-<pre><code class="language-ruby">Rails.application.routes.draw do
-  root to: 'employees#index'
-  resources :employees
-end
-</code></pre>
-<h2 id="42-画面の作成"><a class="header" href="#42-画面の作成">4.2. 画面の作成</a></h2>
-<p><code>inde.html.erb</code>ファイルを新規作成します。</p>
-<pre><code class="language-bash">touch app/views/employees/index.html.erb
-</code></pre>
-<p><code>myapp\views\employees\index.html.erb</code>のファイルを編集します</p>
-<pre><code class="language-html">&lt;!-- index.html.erb --&gt;
-&lt;h1&gt;List of employees&lt;/h1&gt;
-
-&lt;table border=&quot;1&quot; width=&quot;700&quot; cellspacing=&quot;0&quot; cellpadding=&quot;5&quot; bordercolor=&quot;#333333&quot; class=&quot;table table-hover&quot;&gt;
-  &lt;thead class=&quot;thead-dark&quot;&gt;
-    &lt;tr&gt;
-      &lt;th bgcolor=&quot;#87cefa&quot; class=&quot;align-middle&quot; scope=&quot;col&quot; width=&quot;100&quot;&gt;&lt;font size=&quot;+1&quot; color=&quot;#FFFFFF&quot;&gt;Employee no&lt;/font&gt;&lt;/th&gt;
-      &lt;th bgcolor=&quot;#87cefa&quot; class=&quot;align-middle&quot; scope=&quot;col&quot; width=&quot;400&quot;&gt;&lt;font size=&quot;+1&quot; color=&quot;#FFFFFF&quot;&gt;Name&lt;/font&gt;&lt;/th&gt;
-      &lt;th bgcolor=&quot;#87cefa&quot; class=&quot;align-middle&quot; scope=&quot;col&quot; width=&quot;150&quot;&gt;&lt;font size=&quot;+1&quot; color=&quot;#FFFFFF&quot;&gt;Hire date&lt;/font&gt;&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-
-
-  &lt;tbody&gt;
-    &lt;% @employees.each do |employee| %&gt;
-      &lt;tr scope=&quot;row&quot;&gt;
-        &lt;td&gt;&lt;%= employee.number %&gt;&lt;/td&gt;
-        &lt;td&gt;&lt;%= employee.name %&gt;&lt;/td&gt;
-        &lt;td&gt;&lt;%= employee.date %&gt;&lt;/td&gt;
-      &lt;/tr&gt;
-    &lt;% end %&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-</code></pre>
-<h2 id="43-画面の確認"><a class="header" href="#43-画面の確認">4.3. 画面の確認</a></h2>
-<p><code>http://localhost:3000/</code>にアクセスし、以下の画面が表示されたら完成！</p>
-<p><img src="https://user-images.githubusercontent.com/53431136/69325948-53db6d00-0c8e-11ea-982e-650f9e31d71d.png" alt="image-20191121003744232" /></p>
-<h2 id="44-おまけ"><a class="header" href="#44-おまけ">4.4. おまけ</a></h2>
-<p>今回は扱いませんが、<code>scaffold</code>を使用して雛形的な自動生成も行う事が出来ます。<br>コントローラーやモデルの作成を省けるというメリットもありますが、デメリットとしては<code>MVC</code>や<code>Rails</code>への理解が浅いと<strong>よくわからないが出来た</strong>状態になってしまうことが考えられます。</p>
-<h2 id="45-モデルから画面まで自動生成します"><a class="header" href="#45-モデルから画面まで自動生成します">4.5. モデルから画面まで自動生成します</a></h2>
-<pre><code class="language-ruby">rails g scaffold Personal number:string name:string date:string
-</code></pre>
-<h2 id="46-追加したモデルのテーブルを作成"><a class="header" href="#46-追加したモデルのテーブルを作成">4.6. 追加したモデルのテーブルを作成</a></h2>
-<pre><code class="language-ruby">rails db:migrate
-</code></pre>
-<h2 id="47-何が出来たのか確認"><a class="header" href="#47-何が出来たのか確認">4.7. 何が出来たのか確認</a></h2>
-<p><code>http://localhost:3000/personals</code>に接続して画面の確認を行います。</p>
-<p><img src="https://user-images.githubusercontent.com/53431136/69335804-d40ace00-0ca0-11ea-9fe8-3a8f0cbd74c4.PNG" alt="キャプチャ" /></p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
+                                                    <a rel="prev" href="chapter_1.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
                         
+                                                    <a rel="next" href="chapter_3.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
                         
                         <div style="clear: both"></div>
                     </nav>
@@ -310,7 +196,13 @@ end
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                                    <a rel="prev" href="chapter_1.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
                 
+                                    <a rel="next" href="chapter_3.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
                             </nav>
 
         </div>
@@ -333,11 +225,6 @@ end
 
         <!-- Custom JS scripts -->
         
-                        <script type="text/javascript">
-        window.addEventListener('load', function() {
-            window.setTimeout(window.print, 100);
-        });
-        </script>
-                
+        
     </body>
 </html>
