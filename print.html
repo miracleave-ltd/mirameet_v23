@@ -169,18 +169,61 @@ cd ~/myapp
 <pre><code class="language-yml">docker-compose stop
 </code></pre>
 <h2 id="22-データベースの繋ぎ先を設定"><a class="header" href="#22-データベースの繋ぎ先を設定">2.2. データベースの繋ぎ先を設定</a></h2>
-<p><code>myapp\config\database.yml</code>を<code>database.yml</code>で上書きします</p>
+<p><code>database.yml</code>ファイルの記述をコピーし、<code>myapp\config\database.yml</code>に上書きします。</p>
 <h2 id="23-default_authenticationcnfファイルを配置"><a class="header" href="#23-default_authenticationcnfファイルを配置">2.3. <code>default_authentication.cnf</code>ファイルを配置</a></h2>
-<p><code>C:\Users\myapp\mysql-confd</code>に　<code>default_authentication.cnf</code>を配置します。</p>
+<p><code>default_authentication.cnf</code>ファイルを<code>C:\Users\myapp\mysql-confd</code>内にコピーします。</p>
 <h2 id="24-イメージをビルド"><a class="header" href="#24-イメージをビルド">2.4. イメージをビルド</a></h2>
 <pre><code class="language-yml">docker-compose build
 # 「Successfully built ●●●●●●●●●」が出たら完了！
 </code></pre>
 <h2 id="25-データベース用のコンテナを起動しデータベースの作成"><a class="header" href="#25-データベース用のコンテナを起動しデータベースの作成">2.5. データベース用のコンテナを起動し、データベースの作成</a></h2>
-<p>コンテナの起動。</p>
+<p>コンテナの起動を行います。</p>
 <pre><code class="language-yml">docker-compose up -d db
 </code></pre>
-<p>データベースの作成。</p>
+<p>データベースのコンテナに入ります。</p>
+<pre><code class="language-bash"># 起動しているコンテナ名を確認
+docker ps
+# myapp_db_1というデータベースのコンテナが起動しているのでコンテナへ入る
+docker exec -it myapp_db_1 bash
+# MySQLにログイン
+mysql -u root -p         
+Enter password: # passwordを入力
+</code></pre>
+<p>MySQLのテーブルを検索し、一部変更する。<br><code>Plugin</code>が<code>caching_sha2_password</code>だと後続の手順に影響があるため。</p>
+<pre><code class="language-sql">sql&gt; SELECT User, Host, Plugin  FROM mysql.user;
++------------------+-----------+-----------------------+
+| User             | Host      | Plugin                |
++------------------+-----------+-----------------------+
+| root             | %         | caching_sha2_password |
+| mysql.infoschema | localhost | caching_sha2_password |
+| mysql.session    | localhost | caching_sha2_password |
+| mysql.sys        | localhost | caching_sha2_password |
+| root             | localhost | caching_sha2_password |
++------------------+-----------+-----------------------+
+5 rows in set (0.00 sec)
+</code></pre>
+<p>以下の通り、SQLを実行して更新。</p>
+<pre><code class="language-sql">mysql&gt; ALTER USER root@localhost IDENTIFIED WITH mysql_native_password BY 'password';
+ugin  FROM mysql.user;
+Query OK, 0 rows affected (0.01 sec)
+</code></pre>
+<p>更新されたか確認する。</p>
+<pre><code class="language-sql">mysql&gt; SELECT User, Host, Plugin  FROM mysql.user;
+# 以下のようにrootのPluginがmysql_native_passwordになっていればOK
++------------------+-----------+-----------------------+
+| User             | Host      | Plugin                |
++------------------+-----------+-----------------------+
+| root             | %         | mysql_native_password |
+| mysql.infoschema | localhost | caching_sha2_password |
+| mysql.session    | localhost | caching_sha2_password |
+| mysql.sys        | localhost | caching_sha2_password |
+| root             | localhost | mysql_native_password |
++------------------+-----------+-----------------------+
+5 rows in set (0.00 sec)
+# exitでMySQLから抜けます
+mysql&gt;exit 
+</code></pre>
+<p>データベースの作成を行います。</p>
 <pre><code class="language-yml">docker-compose run web rake db:create
 </code></pre>
 <h2 id="26-全コンテナを起動"><a class="header" href="#26-全コンテナを起動">2.6. 全コンテナを起動</a></h2>
