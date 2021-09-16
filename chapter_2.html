@@ -152,6 +152,7 @@
 </code></pre>
 <h2 id="22-データベースの繋ぎ先を設定"><a class="header" href="#22-データベースの繋ぎ先を設定">2.2. データベースの繋ぎ先を設定</a></h2>
 <p><code>database.yml</code>ファイルの記述をコピーし、<code>myapp\config\database.yml</code>に上書きします。</p>
+<p>※docker-compose.ymlに設定されている情報でアクセスできるようにpassword等の記述を行います。</p>
 <h2 id="23-default_authenticationcnfファイルを配置"><a class="header" href="#23-default_authenticationcnfファイルを配置">2.3. <code>default_authentication.cnf</code>ファイルを配置</a></h2>
 <p><code>default_authentication.cnf</code>ファイルを<code>C:\Users\myapp\mysql-confd</code>内にコピーします。</p>
 <h2 id="24-イメージをビルド"><a class="header" href="#24-イメージをビルド">2.4. イメージをビルド</a></h2>
@@ -162,6 +163,7 @@
 <p>コンテナの起動を行います。</p>
 <pre><code class="language-yml">docker-compose up -d db
 </code></pre>
+<p>次にこれから行う作業時に認証部分で影響が出てしまう箇所があるため、mysqlの認証プラグイン情報を修正します。</p>
 <p>データベースのコンテナに入ります。</p>
 <pre><code class="language-bash"># 起動しているコンテナ名を確認
 docker ps
@@ -169,9 +171,9 @@ docker ps
 docker exec -it myapp_db_1 bash
 # MySQLにログイン
 mysql -u root -p         
-Enter password: # passwordを入力
+Enter password: # passwordを入力(全て小文字)
 </code></pre>
-<p>MySQLのテーブルを検索し、一部変更する。<br><code>Plugin</code>が<code>caching_sha2_password</code>だと後続の手順に影響があるため。</p>
+<p>MySQLのテーブルを検索し、一部変更する。</p>
 <pre><code class="language-sql">sql&gt; SELECT User, Host, Plugin  FROM mysql.user;
 +------------------+-----------+-----------------------+
 | User             | Host      | Plugin                |
@@ -184,9 +186,12 @@ Enter password: # passwordを入力
 +------------------+-----------+-----------------------+
 5 rows in set (0.00 sec)
 </code></pre>
+<p>rootに紐づくpluginの情報をcaching_sha2_passwordからmysql_native_passwordに更新します。</p>
 <p>以下の通り、SQLを実行して更新。</p>
 <pre><code class="language-sql">mysql&gt; ALTER USER root@localhost IDENTIFIED WITH mysql_native_password BY 'password';
-ugin  FROM mysql.user;
+Query OK, 0 rows affected (0.01 sec)
+</code></pre>
+<pre><code class="language-sql">mysql&gt; ALTER USER 'root'@'%' IDENTIFIED WITH mysql_native_password BY 'password';
 Query OK, 0 rows affected (0.01 sec)
 </code></pre>
 <p>更新されたか確認する。</p>
@@ -213,7 +218,7 @@ mysql&gt;exit
 <pre><code>docker-compose up -d 
 </code></pre>
 <p>正常に起動しているかを確認</p>
-<pre><code>docker ps -a
+<pre><code>docker ps
 </code></pre>
 <p>「myapp_web」と「mysql」のコンテナがupしていればOK！
 以下に接続してみましょう！</p>
