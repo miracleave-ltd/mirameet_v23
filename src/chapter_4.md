@@ -22,9 +22,8 @@ touch app/views/employees/index.html.erb
 ```
 
 `myapp\views\employees\index.html.erb`のファイルを編集します
-
+`index.html.erb`
 ```html
-<!-- index.html.erb -->
 <h1>List of employees</h1>
 
 <table border="1" width="700" cellspacing="0" cellpadding="5" bordercolor="#333333" class="table table-hover">
@@ -51,7 +50,7 @@ touch app/views/employees/index.html.erb
 
 ## 4.3. 画面の確認
 
-`http://localhost:3000/`にアクセスし、以下の画面が表示されたら完成！
+`http://localhost:3000/`にアクセスし、以下の画面が表示されたら完成です！
 
 ![image-20191121003744232](https://user-images.githubusercontent.com/53431136/69325948-53db6d00-0c8e-11ea-982e-650f9e31d71d.png)
 
