@@ -14,6 +14,8 @@ docker-compose stop
 
 `database.yml`ファイルの記述をコピーし、`myapp\config\database.yml`に上書きします。
 
+※docker-compose.ymlに設定されている情報でアクセスできるようにpassword等の記述を行います。
+
 ## 2.3. `default_authentication.cnf`ファイルを配置
 
 `default_authentication.cnf`ファイルを`C:\Users\myapp\mysql-confd`内にコピーします。
@@ -33,6 +35,8 @@ docker-compose build
 docker-compose up -d db
 ```
 
+次にこれから行う作業時に認証部分で影響が出てしまう箇所があるため、mysqlの認証プラグイン情報を修正します。
+
 データベースのコンテナに入ります。
 
 ```bash
@@ -42,10 +46,10 @@ docker ps
 docker exec -it myapp_db_1 bash
 # MySQLにログイン
 mysql -u root -p         
-Enter password: # passwordを入力
+Enter password: # passwordを入力(全て小文字)
 ```
 
-MySQLのテーブルを検索し、一部変更する。<br>`Plugin`が`caching_sha2_password`だと後続の手順に影響があるため。
+MySQLのテーブルを検索し、一部変更する。
 ```sql
 sql> SELECT User, Host, Plugin  FROM mysql.user;
 +------------------+-----------+-----------------------+
@@ -60,13 +64,17 @@ sql> SELECT User, Host, Plugin  FROM mysql.user;
 5 rows in set (0.00 sec)
 ```
 
+rootに紐づくpluginの情報をcaching_sha2_passwordからmysql_native_passwordに更新します。
+
 以下の通り、SQLを実行して更新。
 ```sql
 mysql> ALTER USER root@localhost IDENTIFIED WITH mysql_native_password BY 'password';
-ugin  FROM mysql.user;
 Query OK, 0 rows affected (0.01 sec)
 ```
-
+```sql
+mysql> ALTER USER 'root'@'%' IDENTIFIED WITH mysql_native_password BY 'password';
+Query OK, 0 rows affected (0.01 sec)
+```
 更新されたか確認する。
 
 ```sql
@@ -101,7 +109,7 @@ docker-compose up -d
 
 正常に起動しているかを確認
 ```
-docker ps -a
+docker ps
 ```
 「myapp_web」と「mysql」のコンテナがupしていればOK！
 以下に接続してみましょう！
