@@ -1,14 +1,24 @@
 # 3. テーブル作成とSeedデータ投入
 
+環境作成が出来ましたので、新規画面を作成していきます。
+
+以下のような社員情報を表示する画面を作っていきます。
+![image-20191121003744232](https://user-images.githubusercontent.com/53431136/69325948-53db6d00-0c8e-11ea-982e-650f9e31d71d.png)
+
+新規画面を作成するには、モデルの追加、コントローラーの追加、ビューの追加、ルーティングの追加を行います。
+![05](https://user-images.githubusercontent.com/85742205/133610593-2e0400db-1d6a-4260-8fc6-565dcc27d603.png)
+
 <!-- toc -->
 
-WEBのコンテナに接続します。
+初めに、各ファイルを作成する為にWEBのコンテナに接続します。
 
 ```bash
 docker exec -it myapp_web_1 bash
 ```
 
 # 3.1. migrate準備
+
+railsのgenerateコマンドを実行してmodelの作成を行います。
 
 以下を実行し、`model`ファイルと`migration`ファイルを作成します。<br>モデル名は**単数形**で先頭は**大文字**にします。
 
@@ -30,8 +40,8 @@ rails g controller Employees
 
 `myapp\app\controllers\employees_controller.rb`を以下のとおり、編集します。<br>`Employee`テーブルのデータを全て取得する簡単なプログラムです。
 
+`employees_controller.rb`
 ```ruby
-// employees_controller.rb
 class EmployeesController < ApplicationController
   def index
     @employees = Employee.all
@@ -42,9 +52,8 @@ end
 ## 3.2. Seedデータ準備
 
 `myapp\db\seeds.rb`のファイルを以下のとおり、編集します。
-
+`seeds.rb`
 ```ruby
-// seeds.rb
 Employee.create(
   [
     {
