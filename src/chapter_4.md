@@ -21,7 +21,7 @@ end
 touch app/views/employees/index.html.erb
 ```
 
-`myapp\views\employees\index.html.erb`のファイルを編集します
+`myapp\app\views\employees\index.html.erb`のファイルを編集します
 `index.html.erb`
 ```html
 <h1>List of employees</h1>
